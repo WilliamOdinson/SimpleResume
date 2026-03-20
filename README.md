@@ -3,10 +3,13 @@ A simple, clean LaTeX résumé template.
 ## Overview
 
 <p align="center">
-  <img src="https://github.com/WilliamOdinson/SimpleResume/releases/latest/download/default.png"
-       alt="Preview of the template"
-       style="width: 295px; height: 386px; object-fit: contain;">
+  <picture>
+    <img src="https://github.com/WilliamOdinson/SimpleResume/releases/latest/download/default.png"
+         alt="Preview of the default template">
+  </picture>
 </p>
+
+> Download <a href="https://github.com/WilliamOdinson/SimpleResume/releases/latest">PDF</a> from latest release
 
 - **main.tex**
   The primary file where sections such as *Education*, *Experience*, *Leadership & Activities*, and *Notable GitHub Projects* are orchestrated.
