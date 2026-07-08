@@ -14,7 +14,7 @@
 \def\github{github.com/username}
 
 % If you do not want to display the address, simply comment it out.
-\def\address{Current Adrress, USA}
+\def\address{Current Address, USA}
 
 \def\profileSummary{
 	\section{Career summary}
@@ -25,6 +25,7 @@
 %-------------------------------------
 % Education
 %-------------------------------------
+% Pass {} for Concentration, GPA, or Highlights to omit them cleanly.
 \Education{PhD}
 {Year}{Year}{Harvard University}{Cambridge, MA}
 {PhD Degree}
@@ -38,8 +39,12 @@
 \Education{Bachelor}
 {Year}{Year}{Harvard University}{Cambridge, MA}
 {Bachelor Degree}
-{Concentration}{GPA:4.0/4.0}{Relevant Coursework: [Note: Optional. Awards and honors can also be listed here.]}
+{Concentration}{GPA:4.0/4.0}
+{Relevant Coursework: [Note: Optional. Awards and honors can also be listed here.]}
 
+%-------------------------------------
+% Professional Experience
+%-------------------------------------
 \Experience{Exp1}
 {Month Year}
 {Month Year}
@@ -47,13 +52,13 @@
 {Position Title}
 {City, State (or Remote)}
 {
-	\begin{itemize}
+	\begin{highlights}
 		\resumeItem{Beginning with your most recent position, describe your experience, skills, and resulting outcomes in bullet form.}
 		\resumeItem{Begin each line with an action verb and include details that will help the reader understand your accomplishments,
 			skills, knowledge, abilities, or achievements.}
 		\resumeItem{Quantify where possible.}
 		\resumeItem{Do not use personal pronouns; each line should be a phrase rather than a full sentence.}
-	\end{itemize}\vspace{-5pt}
+	\end{highlights}
 }
 
 \Experience{Exp2}
@@ -63,15 +68,18 @@
 {Position Title}
 {City, State (or Remote)}
 {
-	\begin{itemize}
+	\begin{highlights}
 		\resumeItem{Beginning with your most recent position, describe your experience, skills, and resulting outcomes in bullet form.}
 		\resumeItem{Begin each line with an action verb and include details that will help the reader understand your accomplishments,
 			skills, knowledge, abilities, or achievements.}
 		\resumeItem{Quantify where possible.}
 		\resumeItem{Do not use personal pronouns; each line should be a phrase rather than a full sentence.}
-	\end{itemize}\vspace{-5pt}
+	\end{highlights}
 }
 
+%-------------------------------------
+% Leadership & Activities
+%-------------------------------------
 \Experience{Lead1}
 {Month Year}
 {Month Year}
@@ -79,26 +87,38 @@
 {Role}
 {City, State}
 {
-	\begin{itemize}
+	\begin{highlights}
 		\resumeItem{This section can be formatted similarly to the Experience section, or you can omit descriptions for activities.}
 		\resumeItem{If this section is more relevant to the opportunity you are applying for, consider moving this above your Experience section.}
-	\end{itemize}\vspace{-5pt}
+	\end{highlights}
 }
 
-\Project{Github1}
+%-------------------------------------
+% Projects (use \Experience, render with \renderProject)
+%-------------------------------------
+% \renderProject shows: bold title (time) | subtitle. No location row.
+\Experience{Github1}
 {2025}
+{Present}
 {Simple Resume Template}
 {developer}
-{\begin{itemize}
+{Pittsburgh, PA}
+{
+	\begin{highlights}
 		\resumeItem{\lrand[1]}
 		\resumeItem{\lrand[1]}
-	\end{itemize}\vspace{-23pt}}
+	\end{highlights}
+}
 
-\Project{Github2}
+\Experience{Github2}
+{2024}
 {2025}
 {Simple Resume Template}
 {developer}
-{\begin{itemize}
+{Pittsburgh, PA}
+{
+	\begin{highlights}
 		\resumeItem{\lrand[1]}
 		\resumeItem{\lrand[1]}
-	\end{itemize}\vspace{-23pt}}
+	\end{highlights}
+}
