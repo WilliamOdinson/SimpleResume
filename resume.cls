@@ -125,20 +125,15 @@
 % -------------------------------------
 % Font Options
 % -------------------------------------
-% sans-serif
-% \usepackage[sfdefault]{FiraSans}
-% \usepackage[sfdefault]{roboto}
-% \usepackage[sfdefault]{noto-sans}
-% \usepackage[default]{sourcesanspro}
+% sans-serif (fontspec)
+% \setmainfont{Fira Sans}
+% \setmainfont{Roboto}
+% \setmainfont{Noto Sans}
 
-% serif
-% \usepackage{CormorantGaramond}
-% \usepackage{charter}
-% \usepackage{mathptmx}
-\usepackage{libertinus}
-
-% \usepackage[scaled]{helvet}
-% \renewcommand{\familydefault}{\sfdefault}
+% serif (fontspec)
+% \setmainfont{XCharter}
+% \setmainfont{TeX Gyre Termes}
+\setmainfont{Libertinus Serif}
 
 % -------------------------------------
 % Hyperlink Global Setup
