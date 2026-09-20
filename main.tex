@@ -1,4 +1,5 @@
-\documentclass[default]{resume}
+% Options: publications (enable bib support), apa|ieee|mla|chicago|numeric|alphabetic (citation style)
+\documentclass[default,publications,apa]{resume}
 \input{personal}
 \begin{document}
 \titlesection
@@ -15,7 +16,6 @@
 \section{Experience}
 \begin{resumeSection}
 	\renderExperience{Exp1}
-	\renderExperience{Exp2}
 	% More Experiences
 \end{resumeSection}
 
@@ -30,11 +30,23 @@
 	\renderProject{Github1}
 \end{resumeSection}
 
+\makeatletter\if@publications\makeatother
+\section{Publications}
+\begin{resumeSection}
+	\item
+	% Render all entries:
+	\renderPublications
+	% Or filter by keyword:
+	% \subsection*{\normalsize Journal Articles}\renderPublications[journal]
+	% \subsection*{\normalsize Conference Papers}\renderPublications[conference]
+	% \subsection*{\normalsize Preprints}\renderPublications[preprint]
+\end{resumeSection}
+\makeatletter\fi\makeatother
+
 \section{Skills}
 \begin{itemize}[itemsep=2pt, parsep=0pt, topsep=2pt, partopsep=0pt, leftmargin=0.0in, label={}]
 	\item \textbf{Languages}: Language1, Language2, Language3, Language4
 	\item \textbf{Frameworks \& Tools}: Framework1, Framework2, Tool1, Tool2
-	\item \textbf{Platforms}: Platform1, Platform2, Platform3
 \end{itemize}
 
 \end{document}

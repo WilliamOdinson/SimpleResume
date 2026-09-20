@@ -91,7 +91,74 @@ Sections are plain `\section{Title}` blocks. Reorder, rename, add, or remove fre
 
 Comment out a `\renderExperience{Key}` or `\renderEducation{Key}` line to hide that entry without deleting its data.
 
-### 7. Skills Section (main.tex)
+### 7. Publications (personal.tex + main.tex + references.bib)
+
+Requires the `publications` class option. Entries come from a `.bib` file processed by biblatex + biber.
+
+**Enable publications** in main.tex:
+```latex
+\documentclass[default,publications,apa]{resume}
+```
+
+**Citation style** is set via a class option. Available styles:
+
+| Option        | Style                          |
+|---------------|--------------------------------|
+| `apa`         | APA 7th edition (default)      |
+| `ieee`        | IEEE                           |
+| `mla`         | MLA                            |
+| `chicago`     | Chicago author-date            |
+| `numeric`     | Numbered `[1], [2], ...`       |
+| `alphabetic`  | Label-based `[Doe24], ...`     |
+
+**Add your .bib file** in personal.tex (inside the `\makeatletter` / `\makeatother` block):
+```latex
+\makeatletter
+\if@publications
+  \boldname{John}{Doe}              % bolds your name in all entries
+  \addbibresource{references.bib}   % path to your .bib file
+\fi
+\makeatother
+```
+
+**`\boldname{Firstname}{Lastname}`** patches biblatex name formatting to auto-bold all name parts (given, family, prefix, suffix) for any author whose family name matches. Matching is on family name only, so `J. Doe` and `John Doe` both bold correctly.
+
+**Render in main.tex:**
+```latex
+\section{Publications}
+\begin{resumeSection}
+    \item
+    \renderPublications              % all entries
+\end{resumeSection}
+```
+
+**Filter by keyword** using the optional argument and `keywords` field in bib entries:
+```latex
+\section{Publications}
+\begin{resumeSection}
+    \item
+    \subsection*{\normalsize Journal Articles}\renderPublications[journal]
+    \subsection*{\normalsize Conference Papers}\renderPublications[conference]
+    \subsection*{\normalsize Preprints}\renderPublications[preprint]
+\end{resumeSection}
+```
+
+Corresponding bib entry:
+```bibtex
+@article{doe2024,
+  author   = {Doe, John and Smith, Alice},
+  title    = {Paper Title},
+  journal  = {Journal Name},
+  year     = {2024},
+  keywords = {journal},
+}
+```
+
+Entries are sorted newest-first (`sorting=ydnt`). All entries from the `.bib` file are included automatically (via `\nocite{*}`); you do not need to `\cite` them.
+
+**Disable publications** by removing the `publications` option from `\documentclass`. The `\if@publications` guards in personal.tex and main.tex ensure nothing breaks.
+
+### 8. Skills Section (main.tex)
 
 Not a special command; use a plain itemize:
 ```latex
@@ -101,13 +168,13 @@ Not a special command; use a plain itemize:
 \end{itemize}
 ```
 
-### 8. Hyperlinks
+### 9. Hyperlinks
 
 ```latex
 \link{https://example.com}{Display Text}   % underlined text with external-link icon
 ```
 
-### 9. Font (resume.cls)
+### 10. Font (resume.cls)
 
 Default: `libertinus` (serif). Switch by commenting/uncommenting in the "Font Options" block:
 
@@ -117,7 +184,7 @@ Default: `libertinus` (serif). Switch by commenting/uncommenting in the "Font Op
 
 ## Build
 
-Requires LuaLaTeX and Inkscape (for SVG rendering).
+Requires LuaLaTeX and Inkscape (for SVG rendering). If `publications` option is enabled, also requires biber (biblatex backend). `latexmk` runs biber automatically when needed.
 
 ```bash
 make          # produces resume.pdf (configured via OUT variable in Makefile)

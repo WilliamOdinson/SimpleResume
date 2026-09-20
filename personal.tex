@@ -16,6 +16,17 @@
 % If you do not want to display the address, simply comment it out.
 \def\address{Current Address, USA}
 
+%-------------------------------------
+% Publications (requires \documentclass[publications]{resume})
+%-------------------------------------
+% Bold your name in all bibliography entries
+\makeatletter
+\if@publications
+  \boldname{Firstname}{Lastname}
+  \addbibresource{references.bib}
+\fi
+\makeatother
+
 \def\profileSummary{
 	\section{Career summary}
 	\link{https://www.google.com/}{Google}

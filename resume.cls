@@ -5,9 +5,21 @@
 % Define options
 % -------------------------------------
 \newif\if@defaultstyle
+\@defaultstyletrue
+
+% Publications support (loads biblatex when enabled)
+\newif\if@publications
+\def\@bibstyle{apa}
 
 \DeclareOption{default}{\@defaultstyletrue}
-\DeclareOption*{\@defaultstyletrue}
+\DeclareOption{publications}{\@publicationstrue}
+\DeclareOption{apa}{\def\@bibstyle{apa}}
+\DeclareOption{ieee}{\def\@bibstyle{ieee}}
+\DeclareOption{mla}{\def\@bibstyle{mla}}
+\DeclareOption{chicago}{\def\@bibstyle{chicago-authordate}}
+\DeclareOption{numeric}{\def\@bibstyle{numeric}}
+\DeclareOption{alphabetic}{\def\@bibstyle{alphabetic}}
+\DeclareOption*{}
 
 \ProcessOptions\relax
 
@@ -33,6 +45,82 @@
 \RequirePackage{titlesec}
 \RequirePackage{xcolor}
 \RequirePackage{graphicx}
+
+% -------------------------------------
+% Publications (biblatex, conditional)
+% -------------------------------------
+\if@publications
+  % Expand \@bibstyle into the options string before loading
+  \begingroup\edef\x{\endgroup
+    \noexpand\RequirePackage[%
+      style=\@bibstyle,
+      backend=biber,
+      sorting=ydnt,
+      defernumbers=true,
+      maxbibnames=99%
+    ]{biblatex}%
+  }\x
+
+  % -- Name bolding --------------------------------------------------
+  \def\@boldfirst{}
+  \def\@boldlast{}
+
+  % \boldname{Firstname}{Lastname}
+  \newcommand{\boldname}[2]{%
+    \def\@boldfirst{#1}%
+    \def\@boldlast{#2}%
+  }
+
+  % Patch family-name formatting: bold when last name matches
+  \renewcommand*{\mkbibnamefamily}[1]{%
+    \ifdefempty{\@boldlast}{#1}{%
+      \ifdefstrequal{\namepartfamily}{\@boldlast}{\textbf{#1}}{#1}%
+    }%
+  }
+
+  % Patch given-name formatting: bold when last name matches (same entry)
+  \renewcommand*{\mkbibnamegiven}[1]{%
+    \ifdefempty{\@boldlast}{#1}{%
+      \ifdefstrequal{\namepartfamily}{\@boldlast}{\textbf{#1}}{#1}%
+    }%
+  }
+
+  % Patch prefix/suffix similarly
+  \renewcommand*{\mkbibnameprefix}[1]{%
+    \ifdefempty{\@boldlast}{#1}{%
+      \ifdefstrequal{\namepartfamily}{\@boldlast}{\textbf{#1}}{#1}%
+    }%
+  }
+  \renewcommand*{\mkbibnamesuffix}[1]{%
+    \ifdefempty{\@boldlast}{#1}{%
+      \ifdefstrequal{\namepartfamily}{\@boldlast}{\textbf{#1}}{#1}%
+    }%
+  }
+
+  % -- Bibliography environment matching resume style -----------------
+  \defbibenvironment{resume}{%
+    \list{}{%
+      \setlength{\leftmargin}{0pt}%
+      \setlength{\rightmargin}{0pt}%
+      \setlength{\itemindent}{0pt}%
+      \setlength{\itemsep}{4pt}%
+      \setlength{\parsep}{0pt}%
+      \setlength{\topsep}{0pt}%
+    }%
+  }{\endlist}{\item\small}
+
+  % -- Render commands ------------------------------------------------
+  % \renderPublications          -> all bib entries
+  % \renderPublications[journal] -> entries with keywords = {journal}
+  \newcommand{\renderPublications}[1][]{%
+    \nocite{*}%
+    \ifblank{#1}{%
+      \printbibliography[heading=none,env=resume]%
+    }{%
+      \printbibliography[heading=none,env=resume,keyword={#1}]%
+    }%
+  }
+\fi
 
 % -------------------------------------
 % Font Options
@@ -79,8 +167,11 @@
   \vspace{-4pt}\raggedright\large\bfseries
 }{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
 
-\input{glyphtounicode}
-\pdfgentounicode=1
+\RequirePackage{iftex}
+\ifpdftex
+  \input{glyphtounicode}
+  \pdfgentounicode=1
+\fi
 \raggedbottom
 \raggedright
 
