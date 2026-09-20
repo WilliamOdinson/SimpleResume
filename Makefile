@@ -1,12 +1,11 @@
-LATEXMK := latexmk -pdf -pdflatex="pdflatex -shell-escape %O %S" -interaction=nonstopmode
+SRC = main
+OUT = resume
 
-.PHONY: default clean
+.PHONY: all clean
 
-default:
-	$(LATEXMK) main.tex
-	$(LATEXMK) -c
-	rm -rf svg-inkscape/
+all:
+	latexmk -lualatex -shell-escape -jobname=$(OUT) $(SRC).tex
+	latexmk -c -jobname=$(OUT) $(SRC).tex
 
 clean:
-	$(LATEXMK) -C
-	rm -rf svg-inkscape/
+	latexmk -C -jobname=$(OUT) $(SRC).tex

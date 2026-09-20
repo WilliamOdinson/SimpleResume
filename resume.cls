@@ -1,9 +1,9 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{resume}[Simple Resume]
 
-%-------------------------------------
+% -------------------------------------
 % Define options
-%-------------------------------------
+% -------------------------------------
 \newif\if@defaultstyle
 
 \DeclareOption{default}{\@defaultstyletrue}
@@ -14,18 +14,18 @@
 % Load base class
 \LoadClass[letterpaper,11pt]{article}
 
-%-------------------------------------
+% -------------------------------------
 % Required Packages
-%-------------------------------------
+% -------------------------------------
 \RequirePackage[english]{babel}
 \RequirePackage[empty]{fullpage}
 \RequirePackage{enumitem}
 \RequirePackage{etoolbox}
 \RequirePackage{fancyhdr}
 \RequirePackage{fontawesome5}
-\RequirePackage[T1]{fontenc}
+\RequirePackage{fontspec}
 \RequirePackage{forarray}
-\RequirePackage[margin=1in,left=0.3in,right=0.3in,top=0.2in,bottom=0.2in]{geometry}
+\RequirePackage[left=0.3in,right=0.3in,top=0.3in,bottom=0.3in,footskip=13.6pt]{geometry}
 \RequirePackage{hyperref}
 \RequirePackage{multicol}
 \RequirePackage{svg}
@@ -34,9 +34,9 @@
 \RequirePackage{xcolor}
 \RequirePackage{graphicx}
 
-%-------------------------------------
+% -------------------------------------
 % Font Options
-%-------------------------------------
+% -------------------------------------
 % sans-serif
 % \usepackage[sfdefault]{FiraSans}
 % \usepackage[sfdefault]{roboto}
@@ -45,21 +45,25 @@
 
 % serif
 % \usepackage{CormorantGaramond}
-\usepackage{charter}
+% \usepackage{charter}
 % \usepackage{mathptmx}
+\usepackage{libertinus}
 
-%-------------------------------------
+% \usepackage[scaled]{helvet}
+% \renewcommand{\familydefault}{\sfdefault}
+
+% -------------------------------------
 % Hyperlink Global Setup
-%-------------------------------------
+% -------------------------------------
 
 \hypersetup{
     colorlinks=false,
     pdfborder={0 0 0},
 }
 
-%-------------------------------------
+% -------------------------------------
 % Page Setup
-%-------------------------------------
+% -------------------------------------
 \pagestyle{fancy}
 \fancyhf{}
 \fancyfoot{}
@@ -83,9 +87,9 @@
 \renewcommand\labelitemi{$\vcenter{\hbox{\tiny$\bullet$}}$}
 \renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
 
-%-------------------------------------
+% -------------------------------------
 % Environments
-%-------------------------------------
+% -------------------------------------
 \newenvironment{resumeSection}{
   \begin{itemize}[leftmargin=0.0in, label={}]
 }{
@@ -93,31 +97,18 @@
 }
 
 \newenvironment{highlights}{
-  \begin{itemize}[leftmargin=8pt, itemsep=4pt, parsep=0pt, topsep=4pt, partopsep=0pt]
+  \begin{itemize}[leftmargin=10pt, itemsep=4pt, parsep=0pt, topsep=4pt, partopsep=0pt, label=\raisebox{0.5ex}{\scalebox{0.5}{$\bullet$}}]
 }{
   \end{itemize}\vspace{-5pt}
 }
 
-%-------------------------------------
-% Basic Resume Building Blocks
-%-------------------------------------
 \newcommand{\resumeItem}[1]{
   \item\small{{#1 \vspace{-2pt}}}
 }
 
-\newcommand{\resumeSubItem}[1]{
-  \resumeItem{#1}\vspace{-4pt}
-}
-
-\newcommand{\classesList}[4]{
-    \item\small{
-        {#1 #2 #3 #4 \vspace{-2pt}}
-  }
-}
-
-%-------------------------------------
+% -------------------------------------
 % Title Section Block
-%-------------------------------------
+% -------------------------------------
 \newif\if@firstcontact
 
 \newcommand{\addcontact}[1]{%
@@ -158,7 +149,7 @@
     \ifdefined\github
       \addcontact{\href{https://\github}{\raisebox{-0\height}\faGithub\ \github}}%
     \fi
-    \makebox[0.92\textwidth][s]{\@contactitems}\\
+    \makebox[0.95\textwidth][s]{\@contactitems}\\
     \ifdefined\address
         \href{https://www.google.com/maps/search/?api=1&query=\address}{\raisebox{-0\height}\faMapMarker\ \address}
     \fi
@@ -167,9 +158,9 @@
 \endgroup
 }
 
-%-------------------------------------
+% -------------------------------------
 % Data Definitions
-%-------------------------------------
+% -------------------------------------
 \newcommand{\Education}[9]{
   \DefineArrayVar{#1}{@}
   {|}{Start|End|University|Location|Degree|Concentration|GPA|Highlights}
@@ -182,17 +173,11 @@
   {|}{{#2}|{#3}|{#4}|{#5}|{#6}|{#7}}
 }
 
-%-------------------------------------
+% -------------------------------------
 % Content Renderers
-%-------------------------------------
+% -------------------------------------
 \newif\if@hasHighlights
 \def\@emptyfield{{}}
-
-% #1=prefix punctuation, #2=var name, #3=field name
-\newcommand{\@field}[3]{%
-  \expandafter\let\expandafter\@tempb\csname #2@#3\endcsname%
-  \ifx\@tempb\@emptyfield\else#1\csname #2@#3\endcsname\fi%
-}
 
 \newcommand{\renderEducation}[1]{%
   \expandafter\let\expandafter\@tempa\csname #1@Highlights\endcsname%
@@ -200,7 +185,7 @@
   \vspace{-2pt}\item
     \begin{tabular*}{1.0\textwidth}[t]{l@{\extracolsep{\fill}}r}
       \textbf{\csname #1@University\endcsname} & {\small \csname #1@Location\endcsname} \\
-      {\small\csname #1@Degree\endcsname\@field{, }{#1}{Concentration}\@field{. }{#1}{GPA}} & {\small \csname #1@Start\endcsname~--~\csname #1@End\endcsname}
+      {\small\csname #1@Degree\endcsname, \csname #1@Concentration\endcsname. \csname #1@GPA\endcsname} & {\small \csname #1@Start\endcsname~--~\csname #1@End\endcsname}
       \if@hasHighlights
         \\ {\small\csname #1@Highlights\endcsname}
       \fi
@@ -224,27 +209,22 @@
   \csname #1@Highlights\endcsname
 }
 
-%-------------------------------------
+% -------------------------------------
 % Utility
-%-------------------------------------
+% -------------------------------------
 \newcommand{\describe}[2]{
   \csname #1@#2\endcsname
 }
 
-\newcommand{\coloredlink}[2]{%
-  \href{#1}{%
-    \textcolor[RGB]{24, 14, 164}{%
-      \underline{#2~%
-      {\includesvg[height=0.7em,inkscapelatex=false]{assets/link-blue.svg}}}%
-    }%
-  }%
-}
-
 \newcommand{\link}[2]{%
-  \href{#1}{%
-    \textcolor[RGB]{0, 0, 0}{%
-      \underline{#2%
-      ~{\includesvg[height=0.7em,inkscapelatex=false]{assets/link-black.svg}}
+  \ifblank{#1}{%
+    \underline{\vphantom{p}#2}%
+  }{%
+    \href{#1}{%
+      \textcolor[RGB]{0, 0, 0}{%
+        \underline{\vphantom{p}#2%
+        ~{\includesvg[height=0.7em,inkscapelatex=false]{assets/link}}
+        }%
       }%
     }%
   }%
