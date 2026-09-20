@@ -1,0 +1,52 @@
+name: Build LaTeX and Release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "*.tex"
+      - "resume.cls"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Compile LaTeX document
+        uses: xu-cheng/latex-action@v4
+        with:
+          root_file: main.tex
+          extra_system_packages: inkscape
+          latexmk_shell_escape: true
+          latexmk_use_lualatex: true
+
+      - name: Rename PDF
+        run: mv main.pdf default.pdf
+
+      - name: Install poppler-utils
+        run: sudo apt-get install -y poppler-utils
+
+      - name: Export 600 PPI PNG preview
+        run: pdftoppm -png -r 600 -singlefile default.pdf default
+
+      - name: Get current date
+        id: date
+        run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ steps.date.outputs.date }}
+          name: Last Updated ${{ steps.date.outputs.date }}
+          files: |
+            default.pdf
+            default.png
+          make_latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
