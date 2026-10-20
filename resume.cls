@@ -271,9 +271,11 @@
   \vspace{-2pt}\item
     \begin{tabular*}{1.0\textwidth}[t]{l@{\extracolsep{\fill}}r}
       \textbf{\csname #1@University\endcsname} & {\small \csname #1@Location\endcsname} \\
-      {\small\csname #1@Degree\endcsname, \csname #1@Concentration\endcsname. \csname #1@GPA\endcsname} & {\small \csname #1@Start\endcsname~--~\csname #1@End\endcsname}
+      {\small\csname #1@Degree\endcsname%
+        \expandafter\ifblank\expandafter{\csname #1@Concentration\endcsname}{}{, \csname #1@Concentration\endcsname}%
+        .\ \csname #1@GPA\endcsname} & {\small \csname #1@Start\endcsname~--~\csname #1@End\endcsname}
       \if@hasHighlights
-        \\ {\small\csname #1@Highlights\endcsname}
+        \\ \multicolumn{2}{@{}p{\textwidth}@{}}{\small\csname #1@Highlights\endcsname}
       \fi
     \end{tabular*}\vspace{-7pt}
 }
