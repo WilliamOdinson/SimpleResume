@@ -263,6 +263,7 @@
 % Content Renderers
 % -------------------------------------
 \newif\if@hasHighlights
+\newif\if@firstGroupRole
 \def\@emptyfield{{}}
 
 \newcommand{\renderEducation}[1]{%
@@ -280,13 +281,61 @@
     \end{tabular*}\vspace{-7pt}
 }
 
+% \@renderRole{Key}{header row}{position suffix}
+% The Position / Start -- End row and highlights of one \Experience entry.
+% #2 is a tabular row placed above it (the Company / Location row, or empty);
+% #3 is appended to Position. An entry with Highlights {} renders as a single row.
+\newcommand{\@renderRole}[3]{%
+  \expandafter\let\expandafter\@tempa\csname #1@Highlights\endcsname%
+  \ifx\@tempa\@emptyfield\@hasHighlightsfalse\else\@hasHighlightstrue\fi%
+  \begin{tabular*}{1.0\textwidth}[t]{l@{\extracolsep{\fill}}r}
+    #2%
+    {\small\csname #1@Position\endcsname#3} & {\small \csname #1@Start\endcsname~--~\csname #1@End\endcsname} \\
+  \end{tabular*}%
+  \if@hasHighlights
+    \vspace{-5pt}%
+    \csname #1@Highlights\endcsname
+  \else
+    \par\vspace{-4pt}%
+  \fi
+}
+
+% \@renderRoleHeader{Key}: the Company / Location row.
+\newcommand{\@renderRoleHeader}[1]{%
+  \textbf{\csname #1@Company\endcsname} & {\small \csname #1@Location\endcsname} \\%
+}
+
 \newcommand{\renderExperience}[1]{
   \vspace{-2pt}\item
-    \begin{tabular*}{1.0\textwidth}[t]{l@{\extracolsep{\fill}}r}
-      \textbf{\csname #1@Company\endcsname} & {\small \csname #1@Location\endcsname} \\
-      {\small\csname #1@Position\endcsname} & {\small \csname #1@Start\endcsname~--~\csname #1@End\endcsname} \\
-    \end{tabular*}\vspace{-10pt}
-  \csname #1@Highlights\endcsname
+  \@renderRole{#1}{\@renderRoleHeader{#1}}{}%
+}
+
+% \renderExperienceGroup{Key1,Key2,...}
+% Several roles at one organization. Company and Location come from the first
+% key and are printed once; each key then adds its own Position / Start -- End
+% row and highlights, in the order given. A later key whose Location is
+% non-empty and differs from the first key's renders as "Position (Location)".
+\newcommand{\renderExperienceGroup}[1]{
+  \vspace{-2pt}\item
+  \@firstGroupRoletrue
+  \forcsvlist{\@renderGroupRole}{#1}%
+}
+
+\newcommand{\@renderGroupRole}[1]{%
+  \expandafter\let\expandafter\@roleLocation\csname #1@Location\endcsname%
+  \if@firstGroupRole
+    \@firstGroupRolefalse
+    \let\@groupLocation\@roleLocation
+    \@renderRole{#1}{\@renderRoleHeader{#1}}{}%
+  \else
+    \ifx\@roleLocation\@emptyfield
+      \@renderRole{#1}{}{}%
+    \else\ifx\@roleLocation\@groupLocation
+      \@renderRole{#1}{}{}%
+    \else
+      \@renderRole{#1}{}{ (\@roleLocation)}%
+    \fi\fi
+  \fi
 }
 
 \newcommand{\renderProject}[1]{

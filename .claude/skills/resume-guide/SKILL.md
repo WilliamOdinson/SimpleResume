@@ -78,12 +78,27 @@ Comment out both lines to hide the footer.
 - **Start/End**: free-form text (e.g. "May 2026", "Present", "2024")
 - **Highlights**: a `highlights` environment containing `\resumeItem{}` entries
 
-Two rendering modes share the same `\Experience` data definition:
+Three rendering modes share the same `\Experience` data definition:
 
-| Renderer            | Layout                                                                          |
-|---------------------|---------------------------------------------------------------------------------|
-| `\renderExperience` | Two-line header: **Company** (right: Location) / Position (right: Start -- End), then bullets |
-| `\renderProject`    | One-line header: **Company** (Start -- End) (right: Position), then bullets. No location row |
+| Renderer                 | Layout                                                                          |
+|--------------------------|---------------------------------------------------------------------------------|
+| `\renderExperience`      | Two-line header: **Company** (right: Location) / Position (right: Start -- End), then bullets |
+| `\renderExperienceGroup` | Several roles at one company: **Company** (right: Location) once, then Position (right: Start -- End) and bullets for each key |
+| `\renderProject`         | One-line header: **Company** (Start -- End) (right: Position), then bullets. No location row |
+
+### 5a. Several Roles at One Organization (personal.tex + main.tex)
+
+A promotion, or an internship that converted to full time, is one `\Experience` per role with the same Company and Location, rendered together:
+
+```latex
+\renderExperienceGroup{Exp1,Exp2}
+```
+
+- Keys are comma-separated, in display order (most recent first)
+- Company and Location are printed once, from the first key; each key adds its own Position / Start -- End row and highlights
+- A role in a different office (Location non-empty and different from the first key's) renders as `Position (Location)`
+- A role with `{}` as Highlights renders as a single dated row
+- Every key remains an ordinary `\Experience` entry and can also be rendered alone with `\renderExperience{Key}`
 
 ### 6. Sections (main.tex)
 
