@@ -263,6 +263,7 @@
 % Content Renderers
 % -------------------------------------
 \newif\if@hasHighlights
+\newif\if@firstGroupRole
 \def\@emptyfield{{}}
 
 \newcommand{\renderEducation}[1]{%
@@ -280,13 +281,54 @@
     \end{tabular*}\vspace{-7pt}
 }
 
+% One role: an optional header row (#2, Company / Location) followed by the
+% Position / Start -- End row, then the role's highlights. Shared by
+% \renderExperience and \renderExperienceGroup. Pass {} as #2 to omit the header.
+\newcommand{\@renderRole}[2]{%
+  \expandafter\let\expandafter\@tempa\csname #1@Highlights\endcsname%
+  \ifx\@tempa\@emptyfield\@hasHighlightsfalse\else\@hasHighlightstrue\fi%
+  \begin{tabular*}{1.0\textwidth}[t]{l@{\extracolsep{\fill}}r}
+    #2%
+    {\small\csname #1@Position\endcsname} & {\small \csname #1@Start\endcsname~--~\csname #1@End\endcsname} \\
+  \end{tabular*}%
+  \if@hasHighlights
+    % Same title-to-bullet gap as before: the old -10pt relied on a stray blank
+    % line after the tabular that no longer exists here.
+    \vspace{-5pt}%
+    \csname #1@Highlights\endcsname
+  \else
+    \par\vspace{-4pt}%
+  \fi
+}
+
+\newcommand{\@renderRoleHeader}[1]{%
+  \textbf{\csname #1@Company\endcsname} & {\small \csname #1@Location\endcsname} \\%
+}
+
 \newcommand{\renderExperience}[1]{
   \vspace{-2pt}\item
-    \begin{tabular*}{1.0\textwidth}[t]{l@{\extracolsep{\fill}}r}
-      \textbf{\csname #1@Company\endcsname} & {\small \csname #1@Location\endcsname} \\
-      {\small\csname #1@Position\endcsname} & {\small \csname #1@Start\endcsname~--~\csname #1@End\endcsname} \\
-    \end{tabular*}\vspace{-10pt}
-  \csname #1@Highlights\endcsname
+  \@renderRole{#1}{\@renderRoleHeader{#1}}%
+}
+
+% \renderExperienceGroup{Key1,Key2,...}
+% Several positions at one organization (promotion, intern to full-time return).
+% Company and Location are printed once, taken from the first key; every key
+% then contributes its own Position / Start -- End row and highlights, in the
+% order given. Each key is an ordinary \Experience entry, so a role can still
+% be rendered on its own with \renderExperience{Key}.
+\newcommand{\renderExperienceGroup}[1]{
+  \vspace{-2pt}\item
+  \@firstGroupRoletrue
+  \forcsvlist{\@renderGroupRole}{#1}%
+}
+
+\newcommand{\@renderGroupRole}[1]{%
+  \if@firstGroupRole
+    \@firstGroupRolefalse
+    \@renderRole{#1}{\@renderRoleHeader{#1}}%
+  \else
+    \@renderRole{#1}{}%
+  \fi
 }
 
 \newcommand{\renderProject}[1]{

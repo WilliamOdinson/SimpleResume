@@ -12,17 +12,17 @@ user_invocable: true
 
 All defined with `\def`. Comment out any line to hide that field from the header.
 
-| Field             | Example                              | Notes                                      |
-|-------------------|--------------------------------------|--------------------------------------------|
-| `\firstname`      | `{John}`                             | Required                                   |
-| `\lastname`       | `{Doe}`                              | Required                                   |
-| `\preferredname`  | `{John}`                             | Optional; shown in parentheses after first name |
-| `\position`       | `{Software Development Engineer}`    | Optional; renders as "Applying For: ..." by default. The label can be changed in resume.cls (e.g. to show availability dates instead) |
-| `\phone`          | `{+1 (xxx) xxx-xxxx}`               | Optional                                   |
-| `\email`          | `{you@example.com}`                  | Optional; rendered as mailto link          |
-| `\linkedin`       | `{linkedin.com/in/username}`         | Optional; do NOT include `https://`        |
-| `\github`         | `{github.com/username}`              | Optional; do NOT include `https://`        |
-| `\address`        | `{City, State, ZIP}`                 | Optional; links to Google Maps             |
+| Field            | Example                           | Notes                                                                                                                                 |
+| ---------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `\firstname`     | `{John}`                          | Required                                                                                                                              |
+| `\lastname`      | `{Doe}`                           | Required                                                                                                                              |
+| `\preferredname` | `{John}`                          | Optional; shown in parentheses after first name                                                                                       |
+| `\position`      | `{Software Development Engineer}` | Optional; renders as "Applying For: ..." by default. The label can be changed in resume.cls (e.g. to show availability dates instead) |
+| `\phone`         | `{+1 (xxx) xxx-xxxx}`             | Optional                                                                                                                              |
+| `\email`         | `{you@example.com}`               | Optional; rendered as mailto link                                                                                                     |
+| `\linkedin`      | `{linkedin.com/in/username}`      | Optional; do NOT include `https://`                                                                                                   |
+| `\github`        | `{github.com/username}`           | Optional; do NOT include `https://`                                                                                                   |
+| `\address`       | `{City, State, ZIP}`              | Optional; links to Google Maps                                                                                                        |
 
 ### 2. Profile Summary (personal.tex + main.tex)
 
@@ -78,12 +78,26 @@ Comment out both lines to hide the footer.
 - **Start/End**: free-form text (e.g. "May 2026", "Present", "2024")
 - **Highlights**: a `highlights` environment containing `\resumeItem{}` entries
 
-Two rendering modes share the same `\Experience` data definition:
+Three rendering modes share the same `\Experience` data definition:
 
-| Renderer            | Layout                                                                          |
-|---------------------|---------------------------------------------------------------------------------|
-| `\renderExperience` | Two-line header: **Company** (right: Location) / Position (right: Start -- End), then bullets |
-| `\renderProject`    | One-line header: **Company** (Start -- End) (right: Position), then bullets. No location row |
+| Renderer                 | Layout                                                                                                                         |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| `\renderExperience`      | Two-line header: **Company** (right: Location) / Position (right: Start -- End), then bullets                                  |
+| `\renderExperienceGroup` | Several roles at one company: **Company** (right: Location) once, then Position (right: Start -- End) and bullets for each key |
+| `\renderProject`         | One-line header: **Company** (Start -- End) (right: Position), then bullets. No location row                                   |
+
+### 5a. Several Roles at One Organization (personal.tex + main.tex)
+
+For a promotion, or an internship that converted to full time, define one `\Experience` per role with the same Company and Location, then render them together:
+
+```latex
+\renderExperienceGroup{Exp1,Exp2}
+```
+
+- Keys are comma-separated, in display order (most recent first)
+- Company and Location are printed once, taken from the first key; each key then adds its own Position / Start -- End row and highlights
+- Pass `{}` as Highlights for a role that should be a single dated row without bullets
+- Each key is still an ordinary `\Experience` entry, so a role can also be rendered on its own with `\renderExperience{Key}`
 
 ### 6. Sections (main.tex)
 
@@ -102,14 +116,14 @@ Requires the `publications` class option. Entries come from a `.bib` file proces
 
 **Citation style** is set via a class option. Available styles:
 
-| Option        | Style                          |
-|---------------|--------------------------------|
-| `apa`         | APA 7th edition (default)      |
-| `ieee`        | IEEE                           |
-| `mla`         | MLA                            |
-| `chicago`     | Chicago author-date            |
-| `numeric`     | Numbered `[1], [2], ...`       |
-| `alphabetic`  | Label-based `[Doe24], ...`     |
+| Option       | Style                      |
+| ------------ | -------------------------- |
+| `apa`        | APA 7th edition (default)  |
+| `ieee`       | IEEE                       |
+| `mla`        | MLA                        |
+| `chicago`    | Chicago author-date        |
+| `numeric`    | Numbered `[1], [2], ...`   |
+| `alphabetic` | Label-based `[Doe24], ...` |
 
 **Add your .bib file** in personal.tex (inside the `\makeatletter` / `\makeatother` block):
 ```latex
